@@ -21,7 +21,7 @@ namespace NewDb.Controllers
         // GET: api/Movies
         [HttpGet]
         public IEnumerable<Movie> GetMovie()
-        {            
+        {
             return _context.Movie;
         }
 

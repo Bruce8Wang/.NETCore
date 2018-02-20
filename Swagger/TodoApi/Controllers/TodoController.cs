@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using TodoApi.Models;
 using System.Linq;
 
-#region TodoController
+#region snippet_TodoController
 namespace TodoApi.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     public class TodoController : Controller
     {
@@ -25,13 +26,16 @@ namespace TodoApi.Controllers
 
         #region snippet_GetAll
         [HttpGet]
+        [Produces("application/json", Type = typeof(TodoItem))]
         public IEnumerable<TodoItem> GetAll()
         {
             return _context.TodoItems.ToList();
         }
+        #endregion
 
-        #region snippet_GetByID
+        #region snippet_GetById
         [HttpGet("{id}", Name = "GetTodo")]
+        [Produces("application/json", Type = typeof(TodoItem))]
         public IActionResult GetById(long id)
         {
             var item = _context.TodoItems.FirstOrDefault(t => t.Id == id);
@@ -42,9 +46,29 @@ namespace TodoApi.Controllers
             return new ObjectResult(item);
         }
         #endregion
-        #endregion
+
         #region snippet_Create
+        /// <summary>
+        /// Creates a TodoItem.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Todo
+        ///     {
+        ///        "id": 1,
+        ///        "name": "Item1",
+        ///        "isComplete": true
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="item"></param>
+        /// <returns>A newly-created TodoItem</returns>
+        /// <response code="201">Returns the newly-created item</response>
+        /// <response code="400">If the item is null</response>            
         [HttpPost]
+        [ProducesResponseType(typeof(TodoItem), 201)]
+        [ProducesResponseType(typeof(TodoItem), 400)]
         public IActionResult Create([FromBody] TodoItem item)
         {
             if (item == null)
@@ -84,6 +108,10 @@ namespace TodoApi.Controllers
         #endregion
 
         #region snippet_Delete
+        /// <summary>
+        /// Deletes a specific TodoItem.
+        /// </summary>
+        /// <param name="id"></param>        
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
@@ -100,4 +128,3 @@ namespace TodoApi.Controllers
         #endregion
     }
 }
-
