@@ -14,7 +14,7 @@ namespace HelloWorld
                 .UseHttpSys(options =>
                 {
                     options.Authentication.AllowAnonymous = false;
-                    options.Authentication.Schemes = AuthenticationSchemes.Negotiate;
+                    options.Authentication.Schemes = AuthenticationSchemes.NTLM;  //仅限Windows系统
                 })
                 .Configure(app =>
                 {
