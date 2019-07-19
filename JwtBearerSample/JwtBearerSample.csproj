@@ -11,8 +11,4 @@
     <PackageReference Include="IdentityModel" Version="3.10.2" />    
   </ItemGroup>
 
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
-  </ItemGroup>
-
 </Project>
