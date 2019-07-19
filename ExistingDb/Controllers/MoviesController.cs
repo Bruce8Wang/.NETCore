@@ -7,9 +7,9 @@ using ExistingDb.Models;
 
 namespace ExistingDb.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/Movies")]
-    public class MoviesController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class MoviesController : ControllerBase
     {
         private readonly MvcMovieContext _context;
 
@@ -20,39 +20,29 @@ namespace ExistingDb.Controllers
 
         // GET: api/Movies
         [HttpGet]
-        public IEnumerable<Movie> GetMovie()
+        public async Task<ActionResult<IEnumerable<Movie>>> GetMovie()
         {
-            return _context.Movie;
+            return await _context.Movie.ToListAsync();
         }
 
         // GET: api/Movies/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetMovie([FromRoute] int id)
+        public async Task<ActionResult<Movie>> GetMovie(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var movie = await _context.Movie.SingleOrDefaultAsync(m => m.Id == id);
+            var movie = await _context.Movie.FindAsync(id);
 
             if (movie == null)
             {
                 return NotFound();
             }
 
-            return Ok(movie);
+            return movie;
         }
 
         // PUT: api/Movies/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie([FromRoute] int id, [FromBody] Movie movie)
+        public async Task<IActionResult> PutMovie(int id, Movie movie)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             if (id != movie.Id)
             {
                 return BadRequest();
@@ -81,13 +71,8 @@ namespace ExistingDb.Controllers
 
         // POST: api/Movies
         [HttpPost]
-        public async Task<IActionResult> PostMovie([FromBody] Movie movie)
+        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             _context.Movie.Add(movie);
             await _context.SaveChangesAsync();
 
@@ -96,14 +81,9 @@ namespace ExistingDb.Controllers
 
         // DELETE: api/Movies/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMovie([FromRoute] int id)
+        public async Task<ActionResult<Movie>> DeleteMovie(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var movie = await _context.Movie.SingleOrDefaultAsync(m => m.Id == id);
+            var movie = await _context.Movie.FindAsync(id);
             if (movie == null)
             {
                 return NotFound();
@@ -112,7 +92,7 @@ namespace ExistingDb.Controllers
             _context.Movie.Remove(movie);
             await _context.SaveChangesAsync();
 
-            return Ok(movie);
+            return movie;
         }
 
         private bool MovieExists(int id)

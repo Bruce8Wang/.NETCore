@@ -4,22 +4,34 @@ namespace ExistingDb.Models
 {
     public partial class MvcMovieContext : DbContext
     {
+        public MvcMovieContext()
+        {
+        }
+
+        public MvcMovieContext(DbContextOptions<MvcMovieContext> options)
+            : base(options)
+        {
+        }
+
         public virtual DbSet<Movie> Movie { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=NewDb;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=10.0.0.143;Database=NewDb;user id=sa;password=1qaz@WSX");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
+
             modelBuilder.Entity<Movie>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             });
         }
     }
